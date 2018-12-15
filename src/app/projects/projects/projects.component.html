@@ -1,0 +1,8 @@
+<input type="text" placeholder="Organization" class="projects__organization" />
+<ul>
+  <li *ngFor="let project of projects">
+    <div>Name: {{project.name}}</div>
+    <div>Language: {{project.language}}</div>
+    <div>Stargazers: {{project.stargazers_count}}</div>
+  </li>
+</ul>
