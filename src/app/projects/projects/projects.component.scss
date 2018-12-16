@@ -1,0 +1,15 @@
+.projects {
+  display: flex;
+
+  &__list {
+    border: 1px solid #eee;
+    flex-grow: 1;
+  }
+
+  &__filters {
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+  }
+
+}
