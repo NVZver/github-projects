@@ -1,3 +1,7 @@
-<p>
-  project works!
-</p>
+<button (click)="back()">Back</button>
+<h1>{{repo}}: branches</h1>
+<ul>
+  <li *ngFor="let branch of branches">
+    {{branch.name}}
+  </li>
+</ul>

@@ -9,7 +9,7 @@ const routes: Routes = [
         component: ProjectsComponent
     },
     {
-        path: ':id',
+        path: ':owner/:repo/branches',
         component: ProjectComponent
     }
 ];
