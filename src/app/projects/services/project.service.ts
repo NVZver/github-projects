@@ -18,11 +18,8 @@ export class ProjectService {
     ) {
     }
 
-    getProjects(opts?: {
-        page?: number,
-        companyName?: string
-    }): Observable<any> {
-        return this.http.request('GET', `${host}/orgs/payworks/repos`, options).pipe(
+    getProjects(organization): Observable<any> {
+        return this.http.request('GET', `${host}/orgs/${organization}/repos`, options).pipe(
             map((repos: any[]) => {
                 const languages = [];
                 repos.forEach(repo => {

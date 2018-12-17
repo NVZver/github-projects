@@ -1,21 +1,29 @@
 <div class="projects">
-  <div class="projects__list">
-    <ul>
-      <li *ngFor="let project of projects$ | async" (click)="projectClick(project)">
-        <div>Name: {{project.name}}</div>
-        <div>Owner: {{project.owner.login}}</div>
-        <div>Language: {{project.language}}</div>
-        <div>Stargazers: {{project.stargazers_count}}</div>
-      </li>
-    </ul>
-
+  <div>
+    <input #organizationInput type="text" placeholder="Organization" class="projects__organization">
+    <button (click)="getProjects(organizationInput.value)">search</button>
   </div>
-  <div class="projects__filters">
 
-    <input type="text" placeholder="Organization" class="projects__organization" />
-    <select class="projects__languages" (change)="filterLanguage($event)">
-      <option value="">All</option>
-      <option *ngFor="let lang of languages$ | async" [value]="lang">{{lang}}</option>
-    </select>
+  <div class="projects__content">
+    <div class="projects__list">
+      <ul>
+        <li *ngFor="let project of projects$ | async" (click)="projectClick(project)">
+          <div>Name: {{project.name}}</div>
+          <div>Owner: {{project.owner.login}}</div>
+          <div>Language: {{project.language}}</div>
+          <div>Stargazers: {{project.stargazers_count}}</div>
+        </li>
+      </ul>
+
+    </div>
+    <div class="projects__filters">
+      <div>Filters</div>
+      <input type="text" placeholder="Project name" class="projects__name" />
+      <select class="projects__languages" (change)="filterLanguage($event)">
+        <option value="">All</option>
+        <option *ngFor="let lang of languages$ | async" [value]="lang">{{lang}}</option>
+      </select>
+    </div>
   </div>
+
 </div>

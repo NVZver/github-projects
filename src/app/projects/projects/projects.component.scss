@@ -1,5 +1,7 @@
 .projects {
-  display: flex;
+  &__content {
+    display: flex;
+  }
 
   &__list {
     border: 1px solid #eee;

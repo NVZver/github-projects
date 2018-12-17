@@ -35,8 +35,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.getProjects();
-    this.subscribeInputChange();
+    this.subscribeProjectNameChange();
     this.subscribeFilterStateChange();
   }
 
@@ -44,8 +43,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this._subscriptionDestroy$.next(true);
   }
 
-  getProjects() {
-    this.projectService.getProjects().subscribe(res => {
+  getProjects(organization) {
+    this.projectService.getProjects(organization).subscribe(res => {
       this._projects = res.repos;
       this._languages = res.languages;
       this.languages$.next(this._languages);
@@ -68,16 +67,22 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.setFilterState('language', language);
   }
 
-  subscribeInputChange() {
-    const input = document.getElementsByClassName('projects__organization')[0];
-    fromEvent(input, 'keydown')
+  subscribeProjectNameChange() {
+    const inputProjectName = document.getElementsByClassName('projects__name')[0];
+    if (inputProjectName) {
+      this.subscribeInputChange(inputProjectName, (value) => { this.setFilterState('project', value); });
+    }
+  }
+
+  subscribeInputChange(element: Element, callback: Function) {
+    fromEvent(element, 'keydown')
       .pipe(
         debounceTime(300),
         takeUntil(this._subscriptionDestroy$),
         map((event: any) => event.target.value)
       )
       .subscribe((value: any) => {
-        this.setFilterState('project', value);
+        callback(value);
       });
   }
 
