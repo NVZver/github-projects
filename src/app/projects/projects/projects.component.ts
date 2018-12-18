@@ -49,10 +49,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   getProjects(organization) {
     this.projectService.getProjects(organization).subscribe(res => {
       this._projects = res.repos;
-      console.log(this._projects);
       if (this._projects.length) {
         this.owner = this._projects[0].owner;
-        console.log(this.owner);
       }
       this._languages = res.languages;
       this.languages$.next(this._languages);
@@ -71,7 +69,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   filterLanguage(language) {
-    console.log(language);
     this.setFilterState('language', language);
   }
 

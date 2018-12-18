@@ -1,7 +1,20 @@
-<button (click)="back()">Back</button>
-<h1>{{repo}}: branches</h1>
-<ul>
-  <li *ngFor="let branch of branches">
-    {{branch.name}}
-  </li>
-</ul>
+<mat-card class="repo-header">
+
+  <button mat-icon-button (click)="back()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <div class="repo-name"> {{repo}} </div>
+
+</mat-card>
+
+<mat-card class="repo-branches">
+  <mat-card-header>
+    <mat-card-title>Branches</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="branches-list">
+    <div *ngFor="let branch of branches" class="branch">
+      {{branch.name}}
+    </div>
+  </mat-card-content>
+
+</mat-card>
