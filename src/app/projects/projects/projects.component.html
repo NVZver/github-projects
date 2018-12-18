@@ -4,14 +4,14 @@
       <input matInput #organizationInput type="text" placeholder="Organization"
         [value]="inputOwnerValue" class="projects__organization">
     </mat-form-field>
-    <button mat-icon-button (click)="submitOwner(organizationInput.value)"
+    <button mat-icon-button class="projects-button__search" (click)="submitOwner(organizationInput.value)"
       [disabled]="!organizationInput.value">
       <mat-icon>search</mat-icon>
     </button>
   </div>
 
-  <div class="projects__content">
-    <mat-card class="projects-list" *ngIf="owner">
+  <div class="projects__content" *ngIf="owner">
+    <mat-card class="projects-card">
       <mat-card-header>
         <div mat-card-avatar class="example-header-image">
           <img [src]="owner.avatar_url" class="project-header__avatar" [alt]="">
@@ -19,7 +19,7 @@
         <mat-card-title>{{owner.login}}</mat-card-title>
         <mat-card-subtitle>{{owner.type}}</mat-card-subtitle>
       </mat-card-header>
-      <mat-card-content>
+      <mat-card-content class="projects-list">
         <div *ngFor="let project of projects$ | async" class="projects-list__item">
           <div class="project-header">
             <div class="project-header__name" (click)="projectClick(project)">{{project.name}}</div>
