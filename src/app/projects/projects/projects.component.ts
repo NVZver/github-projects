@@ -3,11 +3,8 @@ import { ProjectService } from 'src/app/projects/services/project.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs';
 import { debounceTime, takeUntil, map } from 'rxjs/operators';
+import { FilterState } from '../models/filter-state';
 
-class FilterState {
-  project: string;
-  language: string;
-}
 
 @Component({
   selector: 'app-projects',
@@ -25,6 +22,15 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   projects$: BehaviorSubject<any[]> = new BehaviorSubject([]);
   inputOwnerValue = '';
   owner = undefined;
+
+  get projects(): any[] {
+    return this._projects;
+  }
+
+  set projects(value: any[]) {
+    this._projects = value;
+  }
+
   private _filterStateChanged$: Subject<any> = new Subject();
   private _subscriptionDestroy$: Subject<boolean> = new Subject();
   private _projects: any[] = [];
@@ -48,13 +54,13 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   getProjects(organization) {
     this.projectService.getProjects(organization).subscribe(res => {
-      this._projects = res.repos;
-      if (this._projects.length) {
-        this.owner = this._projects[0].owner;
+      this.projects = res.repos;
+      if (this.projects.length) {
+        this.owner = this.projects[0].owner;
       }
       this._languages = res.languages;
       this.languages$.next(this._languages);
-      this.projects$.next(this._projects);
+      this.projects$.next(this.projects);
     });
   }
 
@@ -111,18 +117,17 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   subscribeFilterStateChange() {
     this._filterStateChanged$.subscribe(state => {
-      this.filterProjects(state);
+      const projects = this.filterProjects(state);
+      this.projects$.next(projects);
     });
   }
 
   filterProjects(state: FilterState) {
-    const projects = this._projects.filter(project => {
+    return this._projects.filter(project => {
       const nameMatched = state.project ? this.matchProjectName(project.name, state.project) : true;
       const languageMatched = state.language ? project.language === state.language : true;
-
       return (nameMatched && languageMatched);
     });
-    this.projects$.next(projects);
   }
 
   matchProjectName(target, tested) {
