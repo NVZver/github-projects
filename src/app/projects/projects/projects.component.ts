@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ProjectService } from 'src/app/projects/services/project.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { BehaviorSubject, fromEvent, Subject } from 'rxjs';
 import { debounceTime, takeUntil, map } from 'rxjs/operators';
 
@@ -23,18 +23,21 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   languages$: BehaviorSubject<any[]> = new BehaviorSubject([]);
   projects$: BehaviorSubject<any[]> = new BehaviorSubject([]);
-
-  private _filterStateChanged: Subject<any> = new Subject();
+  inputOwnerValue = '';
+  owner = undefined;
+  private _filterStateChanged$: Subject<any> = new Subject();
   private _subscriptionDestroy$: Subject<boolean> = new Subject();
   private _projects: any[] = [];
   private _languages: any[] = [];
 
   constructor(
     private projectService: ProjectService,
+    private activatedRoute: ActivatedRoute,
     private router: Router
   ) { }
 
   ngOnInit() {
+    this.subscribeRouteChange();
     this.subscribeProjectNameChange();
     this.subscribeFilterStateChange();
   }
@@ -46,6 +49,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   getProjects(organization) {
     this.projectService.getProjects(organization).subscribe(res => {
       this._projects = res.repos;
+      console.log(this._projects);
+      if (this._projects.length) {
+        this.owner = this._projects[0].owner;
+        console.log(this.owner);
+      }
       this._languages = res.languages;
       this.languages$.next(this._languages);
       this.projects$.next(this._projects);
@@ -59,12 +67,30 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   setFilterState(property: string, value: string) {
     this.filterState[property] = value;
-    this._filterStateChanged.next(this.filterState);
+    this._filterStateChanged$.next(this.filterState);
   }
 
-  filterLanguage(event) {
-    const language = event.target.value;
+  filterLanguage(language) {
+    console.log(language);
     this.setFilterState('language', language);
+  }
+
+  submitOwner(owner) {
+    this.router.navigate([], { queryParams: { owner } });
+  }
+
+  subscribeRouteChange() {
+    this.activatedRoute.queryParamMap
+      .pipe(
+        takeUntil(this._subscriptionDestroy$)
+      )
+      .subscribe((paramMap: ParamMap) => {
+        const owner = paramMap.get('owner');
+        if (owner) {
+          this.inputOwnerValue = owner;
+          this.getProjects(owner);
+        }
+      });
   }
 
   subscribeProjectNameChange() {
@@ -87,7 +113,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   subscribeFilterStateChange() {
-    this._filterStateChanged.subscribe(state => {
+    this._filterStateChanged$.subscribe(state => {
       this.filterProjects(state);
     });
   }

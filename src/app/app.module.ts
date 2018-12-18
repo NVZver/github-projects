@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { ProjectsModule } from 'src/app/projects/projects.module';
 import { AppRoutingModule } from 'src/app/app-routing.module';
 
 @NgModule({
@@ -12,6 +12,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule
   ],

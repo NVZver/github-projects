@@ -1,29 +1,58 @@
 <div class="projects">
-  <div>
-    <input #organizationInput type="text" placeholder="Organization" class="projects__organization">
-    <button (click)="getProjects(organizationInput.value)">search</button>
+  <div class="projects-owner__form">
+    <mat-form-field class="projects-owner__input">
+      <input matInput #organizationInput type="text" placeholder="Organization"
+        [value]="inputOwnerValue" class="projects__organization">
+    </mat-form-field>
+    <button mat-icon-button (click)="submitOwner(organizationInput.value)"
+      [disabled]="!organizationInput.value">
+      <mat-icon>search</mat-icon>
+    </button>
   </div>
 
   <div class="projects__content">
-    <div class="projects__list">
-      <ul>
-        <li *ngFor="let project of projects$ | async" (click)="projectClick(project)">
-          <div>Name: {{project.name}}</div>
-          <div>Owner: {{project.owner.login}}</div>
-          <div>Language: {{project.language}}</div>
-          <div>Stargazers: {{project.stargazers_count}}</div>
-        </li>
-      </ul>
+    <mat-card class="projects-list" *ngIf="owner">
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image">
+          <img [src]="owner.avatar_url" class="project-header__avatar" [alt]="">
+        </div>
+        <mat-card-title>{{owner.login}}</mat-card-title>
+        <mat-card-subtitle>{{owner.type}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div *ngFor="let project of projects$ | async" class="projects-list__item">
+          <div class="project-header">
+            <div class="project-header__name" (click)="projectClick(project)">{{project.name}}</div>
+            <div class="project-info">
+              <mat-chip-list>
 
-    </div>
-    <div class="projects__filters">
-      <div>Filters</div>
-      <input type="text" placeholder="Project name" class="projects__name" />
-      <select class="projects__languages" (change)="filterLanguage($event)">
-        <option value="">All</option>
-        <option *ngFor="let lang of languages$ | async" [value]="lang">{{lang}}</option>
-      </select>
-    </div>
+                <mat-chip class="project-language" (click)="filterLanguage(project.language)">{{project.language}}</mat-chip>
+              </mat-chip-list>
+              <div class="project-stars">
+                <div> {{project.stargazers_count}}</div>
+                <mat-icon class="project-stars__icon">star</mat-icon>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-header>Filters</mat-card-header>
+      <mat-card-content class="projects-filters">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Project name" class="projects__name" />
+        </mat-form-field>
+        <mat-select class="projects__languages" placeholder="Languages"
+          [(value)]="filterState.language" (selectionChange)="filterLanguage(filterState.language)">
+          <mat-option [value]="">All</mat-option>
+          <mat-option *ngFor="let lang of languages$ | async" [value]="lang">{{lang}}</mat-option>
+        </mat-select>
+      </mat-card-content>
+
+    </mat-card>
   </div>
 
 </div>
